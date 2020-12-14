@@ -17,7 +17,9 @@ class Item(OrderedDict):
         return self.text
 
     def __getattr__(self, item: str) -> Any:
-        return getattr(self, item, self.attributes.get(item.lower(), ''))
+        if item in self.__dict__:
+            return self.__dict__[item]
+        return self.attributes.get(item.lower(), '')
 
     @staticmethod
     def odict2item(value):
@@ -25,17 +27,19 @@ class Item(OrderedDict):
 
         if isinstance(value, OrderedDict):
             for k, v in value.items():
-                k = k.lower()
-
                 if isinstance(v, OrderedDict):  # assumes v is also list of pairs
                     d[k] = [Item.odict2item(v)]
                 elif isinstance(v, list):
                     d[k] = [Item.odict2item(_v) for _v in v]
                 elif isinstance(v, str):
                     if k.startswith('@'):  # an attribute
-                        d.attributes[k[1:]] = v
-                    elif k.startswith('#'):  # the text element
+                        d.attributes[k[1:].lower()] = v
+                    elif k.startswith('#'): # the text element
                         d.text = v
+                    else:
+                        d[k] = Item.odict2item(v)
+                else: # an empty tag
+                    d[k] = ''
             return d
         elif isinstance(value, str):
             d.text = value
