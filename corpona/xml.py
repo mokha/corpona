@@ -1,13 +1,14 @@
 import io
 from collections import defaultdict, OrderedDict
+from typing import Any
 
 
 class Item(OrderedDict):
     def __init__(self, *args, **kwargs):
-        super(Item, self).__init__(*args, **kwargs)
-        self.text = kwargs.get('text', '').strip()
-        _dic = kwargs.get('attributes', None)
+        self.text = kwargs.pop('text', '').strip()
+        _dic = kwargs.pop('attributes', None)
         self.attributes = _dic if _dic is not None and isinstance(_dic, dict) else defaultdict(str)
+        super(Item, self).__init__(*args, **kwargs)
 
     def filtered_attributes(self, ignore=()):
         return {k: v for k, v in self.attributes.items() if k not in ignore}
@@ -15,28 +16,21 @@ class Item(OrderedDict):
     def __repr__(self):
         return self.text
 
-    def __getattr__(self, item):
-        item = item.lower()
-        return self.attributes.get(item, '')
-
-
-class XML:
-    def __init__(self, *args, **kwargs):
-        self.elements = kwargs.pop('elements', [])  # the main holder for all elements
-
-        # set any additional passed keywords
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+    def __getattr__(self, item: str) -> Any:
+        return getattr(self, item, self.attributes.get(item.lower(), ''))
 
     @staticmethod
     def odict2item(value):
+        d = Item()
+
         if isinstance(value, OrderedDict):
-            d = Item()
             for k, v in value.items():
+                k = k.lower()
+
                 if isinstance(v, OrderedDict):  # assumes v is also list of pairs
-                    d[k.lower()] = d[k] = [XML.odict2item(v)]
+                    d[k] = [Item.odict2item(v)]
                 elif isinstance(v, list):
-                    d[k.lower()] = d[k] = [XML.odict2item(_v) for _v in v]
+                    d[k] = [Item.odict2item(_v) for _v in v]
                 elif isinstance(v, str):
                     if k.startswith('@'):  # an attribute
                         d.attributes[k[1:]] = v
@@ -44,19 +38,22 @@ class XML:
                         d.text = v
             return d
         elif isinstance(value, str):
-            d = Item()
             d.text = value
             return d
         return value
 
-    @staticmethod
-    def parse_file(filename):
+
+class XML(Item):
+    @classmethod
+    def parse_xml(cls, filename, namespaces={}):
         import xmltodict
         with io.open(filename, 'r', encoding='utf-8') as fp:
-            namespaces = {'http://www.w3.org/XML/1998/namespace': 'xml', }
-            x = xmltodict.parse(fp.read(), process_namespaces=True, namespaces=namespaces)
-            r = XML.odict2item(x['r'])
-            lang = r.attributes.get('xml:lang')
-            g_xml = XML(lang=lang)
-            g_xml.elements = r['e'] if 'e' in r else []
-            return g_xml
+            x = xmltodict.parse(fp.read(), process_namespaces=True if namespaces else False, namespaces=namespaces)
+
+            root_keys = list(x.keys())
+
+            if not root_keys:  # no root
+                return cls()
+
+            root = Item.odict2item(x[root_keys[0]])
+            return cls(**{**root, **root.__dict__})
