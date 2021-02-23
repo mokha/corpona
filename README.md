@@ -4,7 +4,7 @@ corpona is a library for processing corpora formats (e.g. XML and JSON).
 ## Examples
 ### Reading NewsML XML format
 ```python
-from corpona.xml import XML
+from corpona import XML
 d = XML.parse_xml('2660341.xml')
 print(f"Guid: {d.guid}") # access tag attributes as Python attributes
 print(f"Language: {d.attributes['xml:lang']}") # in case of special characters, access them directly
@@ -25,8 +25,8 @@ for p in content_body['p']:
 ### Getting a Summary of an XML/JSON
 
 ```python
-from corpona.xml import XML
-from corpona.summary import summarize
+from corpona import XML
+from corpona import summarize
 from pprint import pprint
 
 d = XML.parse_xml('data.xml', namespaces={'http://www.w3.org/XML/1998/namespace': 'xml', })
@@ -38,4 +38,19 @@ pprint(summarize([
     {'key1': 'hello3', 'key2': 3},
     {'key1': 'hello4', 'key2': 4},
 ]), indent=4)
+```
+
+### Find children
+
+
+```python
+from corpona import find_child
+
+data = {"key":["list_item", {"key2":"oo"}, {"key2":"bbb"}]}
+print(find_child(data, ["key", "key2"]))
+print(find_child(data, ["key", "key3"], default_value="ok"))
+
+>> ['oo', 'bbb']
+>> ['ok']
+
 ```
