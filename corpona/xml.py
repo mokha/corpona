@@ -34,11 +34,11 @@ class Item(OrderedDict):
                 elif isinstance(v, str):
                     if k.startswith('@'):  # an attribute
                         d.attributes[k[1:].lower()] = v
-                    elif k.startswith('#'): # the text element
+                    elif k.startswith('#'):  # the text element
                         d.text = v
                     else:
                         d[k] = Item.odict2item(v)
-                else: # an empty tag
+                else:  # an empty tag
                     d[k] = ''
             return d
         elif isinstance(value, str):

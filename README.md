@@ -20,3 +20,22 @@ print("Content: ")
 for p in content_body['p']:
     print(p)
 ```
+
+
+### Getting a Summary of an XML/JSON
+
+```python
+from corpona.xml import XML
+from corpona.summary import summarize
+from pprint import pprint
+
+d = XML.parse_xml('data.xml', namespaces={'http://www.w3.org/XML/1998/namespace': 'xml', })
+pprint(summarize(d), indent=4)
+
+pprint(summarize([
+    {'key1': 'hello1', 'key2': 1},
+    {'key1': 'hello2', 'key2': 2},
+    {'key1': 'hello3', 'key2': 3},
+    {'key1': 'hello4', 'key2': 4},
+]), indent=4)
+```
