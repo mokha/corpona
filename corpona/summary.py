@@ -1,7 +1,6 @@
-from collections import defaultdict, Counter
-import operator
-from functools import reduce
+from collections import Counter
 from itertools import groupby
+from tqdm import tqdm
 
 
 def strtype(v): return str(type(v).__name__)
@@ -26,17 +25,22 @@ class Container:
 
         self.contains_counter = Counter(self.contains)
 
-    def __repr__(self, depth=0, _indent=4, content_only=False):
+    def __repr__(self, depth=0, _indent=4, content_only=False, show_progress=True):
         _output = ''
         if not content_only:
             _output += " " * _indent * depth + f"{self.type}:\n"
 
-        for k, v in self.contains_counter.items():
+        _t = tqdm
+        if show_progress is False:
+            _t = list
+
+        for k, v in _t(self.contains_counter.items()):
             if isinstance(k, tuple):  # a dictionary
                 _k, _type = k
                 _output += " " * _indent * (depth + 1) + f"{_k}:"
                 if _type in ['dict', 'list', 'tuple', 'set']:
-                    _output += "\n" + Container(self.data[_k]).__repr__(depth + 2)
+                    _output += "\n" + Container(self.data[_k]).__repr__(depth + 2, content_only=True,
+                                                                        show_progress=False)
                 else:
                     _output += f" {_type}\n"
             else:
@@ -52,7 +56,7 @@ class Container:
                         for __k, __groups in _inner_inner_containers:
                             _data = list(__groups)
                             _output += " " * _indent * (depth + 2) + f"{len(_data)}:\n"
-                            _output += _data[0].__repr__(depth=depth + 2, content_only=True)
+                            _output += _data[0].__repr__(depth=depth + 2, content_only=True, show_progress=False)
 
         return _output
 
