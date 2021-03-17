@@ -55,6 +55,12 @@ print(find_child(data, ["key", "key3"], default_value="ok"))
 
 ```
 
+## Cite
+
+If you use the library in an academic paper, please cite it:
+
+Alnajjar, K. & Hämäläinen, M., (2021) [Corpona – The Pythonic Way of Processing Corpora](https://www.researchgate.net/publication/350124930_Corpona_-_The_Pythonic_Way_of_Processing_Corpora). In _Hämäläinen, M., Partanen, N. & Alnajjar, K. (eds.) Multilingual Facilitation_. University of Helsinki, p. 25−30
+
 
 ## Need for NLP solutions for your business?
 
