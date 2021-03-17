@@ -61,6 +61,18 @@ If you use the library in an academic paper, please cite it:
 
 Alnajjar, K. & Hämäläinen, M., (2021) [Corpona – The Pythonic Way of Processing Corpora](https://www.researchgate.net/publication/350124930_Corpona_-_The_Pythonic_Way_of_Processing_Corpora). In _Hämäläinen, M., Partanen, N. & Alnajjar, K. (eds.) Multilingual Facilitation_. University of Helsinki, p. 25−30
 
+    @inbook{3bd164164c8648b986cb14a4a8524423,
+    title = "Corpona – The Pythonic Way of Processing Corpora",
+    author = "Khalid Alnajjar and Mika H{\"a}m{\"a}l{\"a}inen",
+    year = "2021",
+    language = "English",
+    pages = "25−30",
+    editor = "Mika H{\"a}m{\"a}l{\"a}inen and Niko Partanen and Khalid Alnajjar",
+    booktitle = "Multilingual Facilitation",
+    publisher = "University of Helsinki",
+    address = "Finland",
+    }
+
 
 ## Need for NLP solutions for your business?
 
