@@ -1,5 +1,6 @@
 # corpona
-corpona is a library for processing corpora formats (e.g. XML and JSON).
+corpona is a library for processing corpora formats (e.g. XML and JSON). 
+The library is installable via PIP: `pip install -U corpona`.
 
 ## Examples
 ### Reading NewsML XML format
